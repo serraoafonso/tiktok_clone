@@ -6,9 +6,13 @@ import {
   StatusBar,
   Platform,
   FlatList,
+  Dimensions
 } from "react-native";
 
 import { FeedItem } from "../../components/FeedItem/index";
+import { useState, useRef } from "react";
+
+const {height: heightScreen} = Dimensions.get("screen");
 
 export function Home() {
   let feedItems = [
@@ -33,6 +37,12 @@ export function Home() {
     },
   ];
 
+  const [showItem, setShowItem] = useState(feedItems[0]);
+  const onViewRef = useRef(({viewableItems})=>{
+    if(viewableItems && viewableItems.length > 0){
+      setShowItem(feedItems[viewableItems[0].index])
+    }
+  })
   return (
     <View style={styles.container}>
       <View style={styles.labels}>
@@ -44,15 +54,18 @@ export function Home() {
           <View style={styles.indicator}></View>
         </TouchableOpacity>
       </View>
-      <FlatList data={feedItems} renderItem={({ item }) => <FeedItem data={item}/>} />
+      <FlatList data={feedItems} renderItem={({ item }) => <FeedItem data={item} currentVisibleItem={showItem} onViewableItemChanged={onViewRef.current}/>} snapToAligment='center' snapToInterval={heightScreen} scrollEventThrottle={200} decelerationRate={'fast'} viewabilityConfig={{
+        waitForInteraction: false,
+        viewAreaCoveragePercentThreshold: 100//100 significa que um item deve estar totalmente visivel na tela ou cobrir a tela inteira  para ser considerado visivel
+      }} showsVerticalScrollIndicator={false}/>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1, //para apanhar o tamnho inteiro da tela
     backgroundColor: "#000",
+    padding: 5,
   },
   labels: {
     flexDirection: "row",
