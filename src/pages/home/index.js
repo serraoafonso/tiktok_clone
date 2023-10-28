@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1, //para apanhar o tamnho inteiro da tela
     backgroundColor: "#000",
-    padding: 5,
+    padding: 2,
   },
   labels: {
     flexDirection: "row",
